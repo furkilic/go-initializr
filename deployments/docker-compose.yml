@@ -1,0 +1,4 @@
+version: '3'
+services:
+  go-initializr:
+    image: go-initializr:0.0.1

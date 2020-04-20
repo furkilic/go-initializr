@@ -1,0 +1,17 @@
+package main
+
+import (
+    "fmt"
+    "{{ .FolderName }}/internal/private"
+    "{{ .FolderName }}/pkg/public"
+)
+
+func main() {
+    fmt.Println("Hello", getName())
+    private.Hello()
+    public.Hello()
+}
+
+func getName() string {
+    return "{{ .Name }}"
+}
