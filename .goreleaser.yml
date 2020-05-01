@@ -1,3 +1,5 @@
+env:
+  - GO111MODULE=on
 before:
   hooks:
     - go mod download
@@ -8,21 +10,30 @@ builds:
       - linux
       - darwin
       - windows
-archives:
-  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}'
-    replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: 386
 checksum:
-  name_template: 'checksums.txt'
-snapshot:
-  name_template: "{{ .Tag }}-next"
+  name_template: '{{ .ProjectName }}_checksums.txt'
 changelog:
   sort: asc
   filters:
     exclude:
       - '^docs:'
       - '^test:'
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
