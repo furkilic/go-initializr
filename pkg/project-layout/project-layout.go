@@ -1,8 +1,8 @@
 package projectlayout
 
 import (
-	"go-initializr/pkg/application"
-	"go-initializr/pkg/files"
+	"github.com/furkilic/go-initializr/pkg/application"
+	"github.com/furkilic/go-initializr/pkg/files"
 	"log"
 	"reflect"
 )

@@ -2,8 +2,8 @@ package projectlayout
 
 import (
 	"fmt"
-	"go-initializr/pkg/application"
-	"go-initializr/pkg/files"
+	"github.com/furkilic/go-initializr/pkg/application"
+	"github.com/furkilic/go-initializr/pkg/files"
 )
 
 type Docs struct{}
