@@ -6,19 +6,17 @@ import (
 )
 
 type Application struct {
-	name string
-}
-
-func NewApplication(name string) Application {
-	return Application{name}
+	Repo  string
+	Owner string
+	Name  string
 }
 
 func (an Application) GetName() string {
-	return an.name
+	return an.Name
 }
 func (an Application) GetAppName() string {
-	return strcase.KebabCase(an.name)
+	return strcase.KebabCase(an.Name)
 }
 func (an Application) GetPkgName() string {
-	return strings.ToLower(strcase.LowerCamelCase(an.name))
+	return strings.ToLower(strcase.LowerCamelCase(an.Name))
 }

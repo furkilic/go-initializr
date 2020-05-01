@@ -1,17 +1,26 @@
 package configs
 
 import (
-	"flag"
-	"go-initializr/pkg/application"
-	"os"
+	"github.com/furkilic/go-boot-config/pkg/go-boot-config"
+	"github.com/furkilic/go-initializr/pkg/application"
+	"log"
 )
 
 func Init() application.Application {
-	appName := flag.String("appName", "", "[Mandatory] Application to generate.")
-	flag.Parse()
-	if *appName == "" {
-		flag.Usage()
-		os.Exit(1)
+	gobootconfig.Load()
+	name, err := gobootconfig.GetString("app.name")
+	if err != nil {
+		log.Fatalf("Error while loading App Name: %v", err)
 	}
-	return application.NewApplication(*appName)
+	owner, err := gobootconfig.GetString("app.owner")
+	if err != nil {
+		log.Fatalf("Error while loading App Owner: %v", err)
+	}
+	repo := gobootconfig.GetStringWithDefault("app.repo", "github.com")
+	app := application.Application{
+		Name:  name,
+		Owner: owner,
+		Repo:  repo,
+	}
+	return app
 }

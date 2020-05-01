@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"go-initializr/internal/configs"
-	"go-initializr/pkg/files"
-	projectlayout "go-initializr/pkg/project-layout"
+	"github.com/furkilic/go-initializr/internal/configs"
+	"github.com/furkilic/go-initializr/pkg/files"
+	"github.com/furkilic/go-initializr/pkg/project-layout"
 	"log"
 )
 

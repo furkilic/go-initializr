@@ -1,4 +1,23 @@
 @REM ----------------------------------------------------------------------------
+@REM Licensed to the Apache Software Foundation (ASF) under one
+@REM or more contributor license agreements.  See the NOTICE file
+@REM distributed with this work for additional information
+@REM regarding copyright ownership.  The ASF licenses this file
+@REM to you under the Apache License, Version 2.0 (the
+@REM "License"); you may not use this file except in compliance
+@REM with the License.  You may obtain a copy of the License at
+@REM
+@REM    http://www.apache.org/licenses/LICENSE-2.0
+@REM
+@REM Unless required by applicable law or agreed to in writing,
+@REM software distributed under the License is distributed on an
+@REM "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+@REM KIND, either express or implied.  See the License for the
+@REM specific language governing permissions and limitations
+@REM under the License.
+@REM ----------------------------------------------------------------------------
+
+@REM ----------------------------------------------------------------------------
 @REM GO Start Up Batch script
 @REM
 @REM Optional ENV vars
@@ -62,7 +81,7 @@ set GO_WRAPPER_PROPERTIES="%GO_PROJECTBASEDIR%\.go\wrapper\go-wrapper.properties
 set GO_INSTALL_PATH="%GO_PROJECTBASEDIR%\.go\wrapper\go"
 set GO_TMP_PATH="%GO_PROJECTBASEDIR%\.go\wrapper\tmp"
 set GO_WRAPPER_DATE="%GO_PROJECTBASEDIR%\.go\wrapper\go\go.date"
-set GO_VERSION_URL="https://golang.org/doc/devel/release.html"
+set GO_VERSION_URL="https://golang.org/dl/"
 set GO_VERSION_PATH="%GO_PROJECTBASEDIR%\.go\wrapper\tmp\go.version"
 set GO_ZIP_PATH="%GO_PROJECTBASEDIR%\.go\wrapper\tmp\go.zip"
 
@@ -91,6 +110,8 @@ if "%GOW_VERBOSE%" == "true" (
 if exist %GO_ZIP_PATH% goto goZipDownloaded
 if not "%DOWNLOAD_URL%" == "" goto goZipDownloadUrlReady
 
+@REM BAD Hack to retrieve latest version
+
 powershell -Command "&{"^
     "$webclient = new-object System.Net.WebClient;"^
     "if (-not ([string]::IsNullOrEmpty('%GOW_USERNAME%') -and [string]::IsNullOrEmpty('%GOW_PASSWORD%'))) {"^
@@ -98,19 +119,14 @@ powershell -Command "&{"^
     "}"^
     "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; $webclient.DownloadFile('%GO_VERSION_URL%', '%GO_VERSION_PATH:~1,-1%')"^
     "}"
-for /f "tokens=*" %%a in ('findstr /R "^go.* (release$" %GO_VERSION_PATH%') do (
-    for /f "tokens=1,3" %%i in ("%%a") do (
-        if not "%%j" == "not" (
-         echo %%j%%i>>%GO_VERSION_PATH%.tmp
-        )
+for /f "tokens=*" %%a in ('findstr /R "toggleVisible" %GO_VERSION_PATH%') do (
+    for /f "tokens=3delims==" %%i in ("%%a") do (
+      echo %%i>>%GO_VERSION_PATH%.tmp
     )
 )
 
-set GO_LATEST_VERSION=
-FOR /f "tokens=1*delims=)" %%a IN (' sort %GO_VERSION_PATH%.tmp ' ) DO  (
-    set GO_LATEST_VERSION=%%b
-)
-set GO_LATEST_VERSION=%GO_LATEST_VERSION:~2%
+set /pGO_LATEST_VERSION=<%GO_VERSION_PATH%.tmp
+set GO_LATEST_VERSION=%GO_LATEST_VERSION:~3,-2%
 
 DEL %GO_VERSION_PATH%.tmp
 DEL %GO_VERSION_PATH%
